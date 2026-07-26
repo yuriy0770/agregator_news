@@ -23,7 +23,7 @@
 git clone https://github.com/yuriy0770/agregator_news.git
 cd agregator_news
 python -m venv venv
-source venv/bin/activate  # или venv\Scripts\activate
+source venv/bin/activate  
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
