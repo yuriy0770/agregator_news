@@ -19,7 +19,7 @@
 
 ## 📦 Установка
 
-```bash
+``bash
 git clone https://github.com/yuriy0770/agregator_news.git
 cd agregator_news
 python -m venv venv
@@ -29,9 +29,6 @@ python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
 
-
-
----
 
 ### 📁 **Структура проекта (что залить на GitHub)**
 agregator_news/
