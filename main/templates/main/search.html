@@ -1,0 +1,114 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+
+<!-- ===== РЕЗУЛЬТАТЫ ПОИСКА ===== -->
+<div class="page-header fade-in">
+    <h1>🔍 Результаты поиска</h1>
+    <p>
+        {% if query %}
+            По запросу <strong>"{{ query }}"</strong> найдено {{ articles.paginator.count }} новостей
+        {% else %}
+            Введите запрос для поиска
+        {% endif %}
+    </p>
+</div>
+
+<!-- ===== КАТЕГОРИИ ===== -->
+<div class="category-pills fade-in delay-1">
+    <a href="{% url 'main:index' %}" class="category-pill">
+        <i class="bi bi-grid-3x3-gap-fill me-1"></i>Все
+    </a>
+    {% for cat in categories %}
+        <a href="{% url 'main:category' cat.slug %}" class="category-pill">
+            {{ cat.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<!-- ===== НОВОСТИ ===== -->
+<div class="row g-4 mt-2">
+    {% for article in articles %}
+        <div class="col-md-6 col-lg-4 fade-in delay-{{ forloop.counter|add:"0"|divisibleby:3|yesno:"1,2,3" }}">
+            <div class="card-neon h-100">
+                {% if article.image %}
+                    <img src="{{ article.image }}" class="card-img-top" alt="{{ article.title }}">
+                {% else %}
+                    <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" style="height: 200px; background: linear-gradient(135deg, #0d1b2a, #1a2a3a);">
+                        <i class="bi bi-newspaper display-1 text-white-50 opacity-25"></i>
+                    </div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge-category">{{ article.category.name|default:"Без категории" }}</span>
+                        <span class="badge-neon">{{ article.source.name }}</span>
+                    </div>
+                    <h5 class="card-title">{{ article.title|truncatechars:70 }}</h5>
+                    <p class="card-text flex-grow-1">{{ article.content|truncatewords:20|safe }}</p>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <small class="text-white-50">
+                            <i class="bi bi-clock me-1"></i>
+                            {{ article.published_at|date:"d.m.Y" }}
+                        </small>
+                    </div>
+                    <a href="{{ article.url }}" target="_blank" class="btn btn-neon w-100">
+                        <i class="bi bi-arrow-right me-2"></i>Читать
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="card-neon p-5">
+                <i class="bi bi-inbox display-1 text-white-50 opacity-25"></i>
+                <h4 class="mt-3 text-white-50">
+                    {% if query %}
+                        По запросу "{{ query }}" ничего не найдено
+                    {% else %}
+                        Введите запрос для поиска
+                    {% endif %}
+                </h4>
+                <p class="text-white-50 small">Попробуйте изменить ключевые слова</p>
+                <a href="{% url 'main:index' %}" class="btn btn-neon mt-3">
+                    <i class="bi bi-arrow-left me-2"></i>На главную
+                </a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- ===== ПАГИНАЦИЯ ===== -->
+{% if articles.has_other_pages %}
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if articles.has_previous %}
+                <li class="page-item">
+                    <a class="page-link btn-neon-outline" href="?page={{ articles.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in articles.paginator.page_range %}
+                <li class="page-item {% if articles.number == num %}active{% endif %}">
+                    <a class="page-link {% if articles.number == num %}btn-neon{% else %}btn-neon-outline{% endif %}"
+                       href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endfor %}
+
+            {% if articles.has_next %}
+                <li class="page-item">
+                    <a class="page-link btn-neon-outline" href="?page={{ articles.next_page_number }}{% if query %}&q={{ query }}{% endif %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
+
+{% endblock %}
