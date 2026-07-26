@@ -30,7 +30,7 @@ python manage.py createsuperuser
 python manage.py runserver
 
 
-### 📁 **Структура проекта (что залить на GitHub)**
+## 📁 Структура проекта (что залить на GitHub)**
 agregator_news/
 ├── main/
 │ ├── management/
